@@ -10,6 +10,8 @@ import lombok.Setter;
 import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "bookings")
@@ -20,12 +22,12 @@ import java.time.LocalDate;
 public class Booking {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq-generator")
-    @SequenceGenerator(name = "seq-generator", allocationSize = 150)
-    private Long booking_id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "booking-seq")
+    @SequenceGenerator(name = "booking-seq", sequenceName = "booking-sequence", allocationSize = 1)
+    private Long bookingId;
 
     @Column(nullable = false)
-    private LocalDate booking_date;
+    private LocalDate bookingDate;
 
     @Enumerated(
             EnumType.STRING
@@ -33,7 +35,16 @@ public class Booking {
     @Column(nullable = false)
     private Status status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_id", nullable = false, unique = true)
+    private Payment payment;
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<BookingSeat> bookingSeats = new ArrayList<>();
+
+
 }
