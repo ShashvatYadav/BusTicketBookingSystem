@@ -1,7 +1,7 @@
-package com.bookBusApp.busTicketBookingSystem.entity;
+package com.busapp.busticketbookingsystem.entity;
 
-import com.bookBusApp.busTicketBookingSystem.enums.PaymentMode;
-import com.bookBusApp.busTicketBookingSystem.enums.Status;
+import com.busapp.busticketbookingsystem.enums.PaymentMode;
+import com.busapp.busticketbookingsystem.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

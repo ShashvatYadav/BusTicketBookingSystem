@@ -1,4 +1,4 @@
-package com.bookBusApp.busTicketBookingSystem.enums;
+package com.busapp.busticketbookingsystem.enums;
 
 public enum PaymentMode {
     UPI, DEBITCARD, CREDITCARD, NETBANKING;

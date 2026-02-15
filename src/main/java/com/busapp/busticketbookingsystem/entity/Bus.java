@@ -1,4 +1,4 @@
-package com.bookBusApp.busTicketBookingSystem.entity;
+package com.busapp.busticketbookingsystem.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

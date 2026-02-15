@@ -1,13 +1,12 @@
-package com.bookBusApp.busTicketBookingSystem.entity;
+package com.busapp.busticketbookingsystem.entity;
 
 
-import com.bookBusApp.busTicketBookingSystem.enums.Status;
+import com.busapp.busticketbookingsystem.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -45,6 +44,7 @@ public class Booking {
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<BookingSeat> bookingSeats = new ArrayList<>();
+
 
 
 }
