@@ -1,8 +1,8 @@
 package com.busapp.busticketbookingsystem.services;
 
-import com.busapp.busticketbookingsystem.dto.AuthResponse;
-import com.busapp.busticketbookingsystem.dto.LoginRequest;
-import com.busapp.busticketbookingsystem.dto.RegisterRequest;
+import com.busapp.busticketbookingsystem.dto.userServiceDTO.AuthResponse;
+import com.busapp.busticketbookingsystem.dto.userServiceDTO.LoginRequest;
+import com.busapp.busticketbookingsystem.dto.userServiceDTO.RegisterRequest;
 import com.busapp.busticketbookingsystem.entity.User;
 
 public interface UserService {
