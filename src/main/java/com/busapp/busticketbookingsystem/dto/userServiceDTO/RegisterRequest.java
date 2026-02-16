@@ -1,4 +1,4 @@
-package com.busapp.busticketbookingsystem.dto;
+package com.busapp.busticketbookingsystem.dto.userServiceDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

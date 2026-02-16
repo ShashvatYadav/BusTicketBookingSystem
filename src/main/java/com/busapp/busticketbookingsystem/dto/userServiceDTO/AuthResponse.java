@@ -1,13 +1,13 @@
-package com.busapp.busticketbookingsystem.dto;
+package com.busapp.busticketbookingsystem.dto.userServiceDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
-public class LoginRequest {
+public class AuthResponse {
+    private String token;
     private String email;
-    private String password;
 }

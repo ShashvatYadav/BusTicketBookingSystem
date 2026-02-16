@@ -1,8 +1,8 @@
 package com.busapp.busticketbookingsystem.services.implementation;
 
-import com.busapp.busticketbookingsystem.dto.AuthResponse;
-import com.busapp.busticketbookingsystem.dto.LoginRequest;
-import com.busapp.busticketbookingsystem.dto.RegisterRequest;
+import com.busapp.busticketbookingsystem.dto.userServiceDTO.AuthResponse;
+import com.busapp.busticketbookingsystem.dto.userServiceDTO.LoginRequest;
+import com.busapp.busticketbookingsystem.dto.userServiceDTO.RegisterRequest;
 import com.busapp.busticketbookingsystem.entity.User;
 import com.busapp.busticketbookingsystem.enums.Role;
 import com.busapp.busticketbookingsystem.reposistory.UserRepository;
@@ -32,7 +32,7 @@ public class UserServiceImp implements UserService {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(Role.USER);
+        user.setRole(Role.ADMIN);
 
         userRepo.save(user);
 

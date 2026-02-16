@@ -39,10 +39,10 @@ public class Booking {
     private User user;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id", nullable = false, unique = true)
+    @JoinColumn(name = "payment_id", unique = true, nullable = true)
     private Payment payment;
 
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BookingSeat> bookingSeats = new ArrayList<>();
 
 
