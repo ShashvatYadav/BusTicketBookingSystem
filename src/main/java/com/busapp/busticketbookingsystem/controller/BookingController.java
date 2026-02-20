@@ -31,7 +31,7 @@ public class BookingController {
     }
 
     @GetMapping("/my")
-    public List<Booking> myBookings() {
+    public List<BookingResponseDTO> myBookings() {
         String userEmail =
                 SecurityContextHolder
                         .getContext()

@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface BookingService {
     BookingResponseDTO createBooking(BookingRequestDTO request, String userEmail);
-    List<Booking> getUserBooking(String userEmail);
+    List<BookingResponseDTO> getUserBooking(String userEmail);
 }

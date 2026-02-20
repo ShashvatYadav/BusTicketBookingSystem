@@ -1,6 +1,7 @@
 package com.busapp.busticketbookingsystem.services.implementation;
 
 import com.busapp.busticketbookingsystem.dto.adminserviceDTO.RouteRequestDto;
+import com.busapp.busticketbookingsystem.dto.adminserviceDTO.RouteResponseDto;
 import com.busapp.busticketbookingsystem.dto.busServiceDTO.BusResponseDTO;
 import com.busapp.busticketbookingsystem.dto.busServiceDTO.SeatResponseDTO;
 import com.busapp.busticketbookingsystem.entity.Route;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,5 +62,27 @@ public class RouteServiceImp implements RouteService {
 
         return routeRepo.save(route);
 
+    }
+
+    @Override
+    public List<RouteResponseDto> getAllRoutes() {
+        List<Route> routes = routeRepo.findAll();
+        if(routes.isEmpty()) return Collections.emptyList();
+        return routes.stream()
+                .map(route -> new RouteResponseDto(
+                        route.getRouteId(),
+                        route.getSource(),
+                        route.getDestination()
+                )).toList();
+    }
+
+    @Override
+    public RouteResponseDto getRoute(Long id) {
+        Route route = routeRepo.findById(id).orElseThrow(() -> new RuntimeException("Route Not Found"));
+        return new RouteResponseDto(
+                route.getRouteId(),
+                route.getSource(),
+                route.getDestination()
+        );
     }
 }
