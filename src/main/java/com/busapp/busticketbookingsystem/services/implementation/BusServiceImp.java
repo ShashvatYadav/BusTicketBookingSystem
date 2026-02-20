@@ -1,9 +1,13 @@
 package com.busapp.busticketbookingsystem.services.implementation;
 
+import com.busapp.busticketbookingsystem.dto.adminserviceDTO.AdminBusResponseDto;
 import com.busapp.busticketbookingsystem.dto.adminserviceDTO.CreateBusRequestDto;
+import com.busapp.busticketbookingsystem.dto.busServiceDTO.BusResponseDTO;
+import com.busapp.busticketbookingsystem.dto.busServiceDTO.SeatResponseDTO;
 import com.busapp.busticketbookingsystem.entity.Bus;
 import com.busapp.busticketbookingsystem.entity.Route;
 import com.busapp.busticketbookingsystem.entity.Seat;
+import com.busapp.busticketbookingsystem.reposistory.BookingSeatRepository;
 import com.busapp.busticketbookingsystem.reposistory.BusRepository;
 import com.busapp.busticketbookingsystem.reposistory.RouteRepository;
 import com.busapp.busticketbookingsystem.services.BusService;
@@ -20,6 +24,7 @@ public class BusServiceImp implements BusService {
 
     private final BusRepository busRepo;
     private final RouteRepository routeRepo;
+    private final BookingSeatRepository bookingSeatRepo;
 
 
     @Override
@@ -58,5 +63,47 @@ public class BusServiceImp implements BusService {
         bus.setSeats(seatList);
 
         return busRepo.save(bus);
+    }
+
+    public List<AdminBusResponseDto> getAllBuses(){
+        List<Bus> buses = busRepo.findAll();
+        if(buses.size()>0){
+                return buses.stream()
+                        .map(bus -> new AdminBusResponseDto(
+                                bus.getBusId(),
+                                bus.getBusName(),
+                                bus.getTotalSeat(),
+                                bus.getRoute().getSource(),
+                                bus.getRoute().getDestination()
+                        )).toList();
+
+        } else return new ArrayList<>();
+    }
+
+    @Override
+    public BusResponseDTO getBusWithSeats(Long busId) {
+
+        Bus bus = busRepo.findById(busId)
+                .orElseThrow(() -> new RuntimeException("Bus not found"));
+
+        List<SeatResponseDTO> seatDTOs = bus.getSeats().stream()
+                .map(seat -> new SeatResponseDTO(
+                        seat.getSeatId(),
+                        seat.getSeatNumber(),
+                        500.0,
+                        isSeatBooked(seat)
+                ))
+                .toList();
+
+        return new BusResponseDTO(
+                bus.getBusId(),
+                bus.getBusName(),
+                bus.getTotalSeat(),
+                seatDTOs
+        );
+    }
+
+    private Boolean isSeatBooked(Seat seat) {
+        return bookingSeatRepo.existsBySeat(seat);
     }
 }

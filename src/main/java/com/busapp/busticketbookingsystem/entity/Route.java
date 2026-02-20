@@ -1,5 +1,6 @@
 package com.busapp.busticketbookingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,5 +33,6 @@ public class Route {
     private String destination;
 
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Bus> buses = new ArrayList<>();
 }
