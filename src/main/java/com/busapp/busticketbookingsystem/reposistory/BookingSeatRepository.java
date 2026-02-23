@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDate;
 
 public interface BookingSeatRepository extends JpaRepository<BookingSeat, Long> {
-    boolean existsBySeatAndBooking_BookingDate(
-            Seat seat, LocalDate bookingDate
+    boolean existsBySeatSeatIdAndBookingBookingDate(
+            Long seatIds, LocalDate bookingDate
     );
     public Boolean existsBySeat(Seat seat);
 }

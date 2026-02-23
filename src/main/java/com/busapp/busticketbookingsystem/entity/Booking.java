@@ -38,13 +38,16 @@ public class Booking {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "payment_id", unique = true, nullable = true)
     private Payment payment;
 
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<BookingSeat> bookingSeats = new ArrayList<>();
 
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bus_id", nullable = false)
+    private Bus bus;
 
 }

@@ -23,9 +23,6 @@ public class Seat {
     @Column(nullable = false)
     String seatNumber;
 
-    @Column(nullable = false)
-    Boolean isBooked = false;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bus_id", nullable = false)
     private Bus bus;

@@ -1,12 +1,12 @@
 package com.busapp.busticketbookingsystem.controller;
 
 import com.busapp.busticketbookingsystem.dto.busServiceDTO.BusResponseDTO;
+import com.busapp.busticketbookingsystem.dto.busServiceDTO.BusWithSeatsDTO;
 import com.busapp.busticketbookingsystem.services.BusService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/buses")
@@ -16,7 +16,10 @@ public class BusController {
     private final BusService busService;
 
     @GetMapping("/{busId}")
-    public BusResponseDTO getBusDetails(@PathVariable Long busId) {
-        return busService.getBusWithSeats(busId);
+    public BusWithSeatsDTO getBusDetails(
+            @PathVariable Long busId,
+            @RequestParam("date") LocalDate bookingDate
+    ) {
+        return busService.getBusWithSeats(busId, bookingDate);
     }
 }

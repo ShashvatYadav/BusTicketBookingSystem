@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,25 +32,13 @@ public class RouteServiceImp implements RouteService {
         }
 
         List<BusResponseDTO> response = new ArrayList<>();
-       return routes.stream().flatMap(
-                route -> route.getBuses().stream()
-        ).map(bus -> {
-                   List<SeatResponseDTO> seatDtos =
-                           bus.getSeats().stream()
-                                   .map(seat -> new SeatResponseDTO(
-                                           seat.getSeatId(),
-                                           seat.getSeatNumber(),
-                                           500.0,
-                                           seat.getIsBooked()
-                                   )).collect(Collectors.toList());
-                   return new BusResponseDTO(
-                           bus.getBusId(),
-                           bus.getBusName(),
-                           bus.getTotalSeat(),
-                           seatDtos
-                   );
-
-        }).toList();
+        return routes.stream()
+                .flatMap(route -> route.getBuses().stream())
+                .map(bus -> new BusResponseDTO(
+                        bus.getBusId(),
+                        bus.getBusName()
+                ))
+                .toList();
     }
 
     @Override

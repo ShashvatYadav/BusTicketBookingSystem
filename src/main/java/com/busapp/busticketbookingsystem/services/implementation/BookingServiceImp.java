@@ -2,14 +2,19 @@ package com.busapp.busticketbookingsystem.services.implementation;
 
 import com.busapp.busticketbookingsystem.dto.bookingserviceDTO.BookingRequestDTO;
 import com.busapp.busticketbookingsystem.dto.bookingserviceDTO.BookingResponseDTO;
+import com.busapp.busticketbookingsystem.dto.userServiceDTO.UserBookingDTO;
 import com.busapp.busticketbookingsystem.entity.*;
 import com.busapp.busticketbookingsystem.enums.PaymentMode;
+import com.busapp.busticketbookingsystem.enums.PaymentStatus;
 import com.busapp.busticketbookingsystem.enums.Status;
 import com.busapp.busticketbookingsystem.reposistory.*;
 import com.busapp.busticketbookingsystem.services.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -22,89 +27,109 @@ public class BookingServiceImp implements BookingService {
     private final BookingSeatRepository bookingSeatRepository;
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
+    private final BusRepository busRepository;
     private final double BASE_PRICE = 500;
-    @Override
+
+
     @Transactional
+    @Override
     public BookingResponseDTO createBooking(
             BookingRequestDTO request,
-            String userEmail
+            String email
     ) {
 
-        User user = userRepository.findByEmail(userEmail)
+        Bus bus = busRepository.findById(request.getBusId())
+                .orElseThrow(() -> new RuntimeException("Bus not found"));
+
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
-        List<Seat> seats = seatRepository.findAllById(request.getSeatIds());
-
-        if (seats.size() != request.getSeatIds().size()) {
-            throw new RuntimeException("Some seats not found");
-        }
-        double totalAmount = 0;
-
-        for (Seat seat : seats) {
-
-            if (!seat.getBus().getBusId()
-                    .equals(request.getBusId())) {
-                throw new RuntimeException("Invalid seat for this bus");
-            }
-
-            boolean alreadyBooked =
+        for (Long seatId : request.getSeatIds()) {
+            boolean exists =
                     bookingSeatRepository
-                            .existsBySeatAndBooking_BookingDate(
-                                    seat,
+                            .existsBySeatSeatIdAndBookingBookingDate(
+                                    seatId,
                                     request.getBookingDate()
                             );
 
-            if (alreadyBooked) {
-                throw new RuntimeException(
-                        "Seat already booked: " + seat.getSeatNumber()
-                );
+            if (exists) {
+                throw new RuntimeException("Seat already booked");
             }
-
-            totalAmount += BASE_PRICE;
         }
+
         Payment payment = new Payment();
-        payment.setPaymentMode(PaymentMode.UPI);
-        payment.setPaymentStatus(Status.CONFIRM);
-        payment = paymentRepository.save(payment);
+        payment.setAmount(request.getSeatIds().size() * 500.0);
+        payment.setPaymentMode(request.getPaymentMode());
+        payment.setPaymentStatus(PaymentStatus.SUCCESS);
+        payment.setTransactionId("TXN" + System.currentTimeMillis());
+        payment.setPaymentTime(LocalDateTime.now());
+
         Booking booking = new Booking();
+        booking.setBus(bus);
         booking.setUser(user);
         booking.setBookingDate(request.getBookingDate());
-        booking.setStatus(Status.CONFIRM);
+        booking.setStatus(Status.CONFIRMED);
         booking.setPayment(payment);
 
-        for (Seat seat : seats) {
+        List<BookingSeat> bookingSeats = new ArrayList<>();
 
-            BookingSeat bookingSeat = new BookingSeat();
-            bookingSeat.setBooking(booking);
-            bookingSeat.setSeat(seat);
-            bookingSeat.setPrice(BASE_PRICE);
+        for (Long seatId : request.getSeatIds()) {
+            Seat seat = seatRepository.findById(seatId)
+                    .orElseThrow(() -> new RuntimeException("Seat not found"));
 
-            booking.getBookingSeats().add(bookingSeat);
+            BookingSeat bs = new BookingSeat();
+            bs.setBooking(booking);
+            bs.setSeat(seat);
+            bs.setPrice(500.0);
+            bs.setBookingDate(request.getBookingDate());
+            bookingSeats.add(bs);
         }
 
-        booking = bookingRepository.save(booking);
+        booking.setBookingSeats(bookingSeats);
+        Booking saved = bookingRepository.save(booking);
+        List<String> seatNumbers =
+                saved.getBookingSeats().stream()
+                        .map(bs -> bs.getSeat().getSeatNumber())
+                        .toList();
+
         return new BookingResponseDTO(
-                booking.getBookingId(),
-                booking.getStatus().name(),
-                totalAmount
+                saved.getBookingId(),
+                saved.getBookingDate(),
+                seatNumbers,
+                saved.getStatus().name()
         );
     }
 
+    @Transactional
     @Override
-    public List<BookingResponseDTO> getUserBooking(String userEmail) {
+    public void cancelBooking(Long bookingId) {
 
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-        return user.getBookings()
-                .stream()
-                .map(b -> new BookingResponseDTO(
+        booking.setStatus(Status.CANCELLED);
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<UserBookingDTO> getUserBooking(String userEmail) {
+
+        List<Booking> bookings =
+                bookingRepository.findBookingsWithSeatsByUserEmail(userEmail);
+
+        return bookings.stream()
+                .map(b -> new UserBookingDTO(
                         b.getBookingId(),
+                        b.getBookingDate(),
                         b.getStatus().name(),
                         b.getBookingSeats()
                                 .stream()
                                 .mapToDouble(BookingSeat::getPrice)
-                                .sum()
+                                .sum(),
+                        b.getBookingSeats()
+                                .stream()
+                                .map(bs -> bs.getSeat().getSeatNumber())
+                                .toList()
                 ))
                 .toList();
     }

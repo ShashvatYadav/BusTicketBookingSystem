@@ -1,13 +1,13 @@
 package com.busapp.busticketbookingsystem.dto.busServiceDTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class SeatResponseDTO {
     private Long seatId;
     private String seatNumber;
-    private Double price;
-    private Boolean isBooked;
+    private boolean isBooked;
 }
