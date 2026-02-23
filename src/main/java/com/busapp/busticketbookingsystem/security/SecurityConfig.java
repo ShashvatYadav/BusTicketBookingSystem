@@ -52,7 +52,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:5173", // local dev
+                "https://bus-ticket-booking-system-frontend-pi.vercel.app" // production
+        ));
 
         configuration.setAllowedMethods(List.of(
                 "GET",
