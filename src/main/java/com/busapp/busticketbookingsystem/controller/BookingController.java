@@ -2,6 +2,7 @@ package com.busapp.busticketbookingsystem.controller;
 
 import com.busapp.busticketbookingsystem.dto.bookingserviceDTO.BookingRequestDTO;
 import com.busapp.busticketbookingsystem.dto.bookingserviceDTO.BookingResponseDTO;
+import com.busapp.busticketbookingsystem.dto.userServiceDTO.UserBookingDTO;
 import com.busapp.busticketbookingsystem.entity.Booking;
 import com.busapp.busticketbookingsystem.services.BookingService;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +31,8 @@ public class BookingController {
         return bookingService.createBooking(request, userEmail);
     }
 
-    @GetMapping("/my")
-    public List<BookingResponseDTO> myBookings() {
+    @GetMapping("/history")
+    public List<UserBookingDTO> myBookings() {
         String userEmail =
                 SecurityContextHolder
                         .getContext()
