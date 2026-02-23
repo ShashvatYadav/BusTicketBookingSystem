@@ -1,8 +1,4 @@
 ---
-
-# 📁 2️⃣ BACKEND – `README.md`
-
-```markdown
 # 🚌 Bus Ticket Booking System – Backend
 
 A Spring Boot REST API for managing bus ticket bookings, seat allocation, and payment handling.
