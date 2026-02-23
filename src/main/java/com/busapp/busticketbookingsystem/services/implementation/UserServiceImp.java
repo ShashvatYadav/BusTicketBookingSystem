@@ -32,7 +32,7 @@ public class UserServiceImp implements UserService {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(Role.USER);
+        user.setRole(Role.ADMIN);
 
         userRepo.save(user);
 
