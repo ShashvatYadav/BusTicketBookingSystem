@@ -1,5 +1,5 @@
 package com.busapp.busticketbookingsystem.enums;
 
 public enum PaymentMode {
-    UPI, CARD, NETBANKING;
+    UPI, CARD, NET_BANKING;
 }

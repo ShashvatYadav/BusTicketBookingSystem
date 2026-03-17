@@ -57,7 +57,7 @@ public class BookingServiceImp implements BookingService {
         }
 
         Payment payment = new Payment();
-        payment.setAmount(request.getSeatIds().size() * 500.0);
+        payment.setAmount(request.getSeatIds().size() * BASE_PRICE);
         payment.setPaymentMode(request.getPaymentMode());
         payment.setPaymentStatus(PaymentStatus.SUCCESS);
         payment.setTransactionId("TXN" + System.currentTimeMillis());
